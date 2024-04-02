@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -26,15 +26,12 @@ jobs:
           npm install
           npm run build --if-present
           npm run test --if-present
-
-      - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
-
+      
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: node-app
-          path: release.zip
+          path: .
 
   deploy:
     runs-on: ubuntu-latest
@@ -50,20 +47,17 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: node-app
-
-      - name: Unzip artifact for deployment
-        run: unzip release.zip
       
       - name: Login to Azure
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_70CF8C65AC1448C1A469C7DC77DE1A2A }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_9F35B6C7F5154963A27E751B9B0D559C }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_21FEA6E141AC428FA48F36611672CD7D }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_D948AF4A69D64FF9950E78E01A8D9DF5 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_8F1AF7D054EA49A4A0B6900790F94927 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_D1014EFA756E487AA28A78010E4F650B }}
 
       - name: 'Deploy to Azure Web App'
-        id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
+        id: deploy-to-webapp
         with:
           app-name: 'apitimser'
           slot-name: 'Production'
